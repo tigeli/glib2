@@ -1,0 +1,18 @@
+@@ -, +, @@ 
+ volume
+---
+ gio/gunixvolume.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+--- a/gio/gunixvolume.c	
++++ a/gio/gunixvolume.c	
+@@ -112,7 +112,8 @@ _g_unix_volume_new (GVolumeMonitor  *volume_monitor,
+   GUnixVolume *volume;
+   
+   if (!(g_unix_mount_point_is_user_mountable (mountpoint) ||
+-	g_str_has_prefix (g_unix_mount_point_get_device_path (mountpoint), "/vol/")) ||
++	g_str_has_prefix (g_unix_mount_point_get_device_path (mountpoint), "/vol/") ||
++	g_str_has_prefix (g_unix_mount_point_get_device_path (mountpoint), "/dev/mmcblk1")) ||
+       g_unix_mount_point_is_loopback (mountpoint))
+     return NULL;
+   
+-- 

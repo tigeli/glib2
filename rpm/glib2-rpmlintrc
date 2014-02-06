@@ -1,0 +1,4 @@
+# This line is mandatory to access the configuration functions
+from Config import *
+addFilter("glib2-devel.* library-without-ldconfig-postin")
+addFilter("glib2-devel.* library-without-ldconfig-postun")

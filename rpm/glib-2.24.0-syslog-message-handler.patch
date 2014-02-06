@@ -1,0 +1,193 @@
+From adee01a89537bf8bb2e81508f1a7a6c43202bb48 Mon Sep 17 00:00:00 2001
+From: Damien Lespiau <damien.lespiau@intel.com>
+Date: Mon, 10 May 2010 20:31:55 +0100
+Subject: [PATCH] Add a custom log handling for MeeGo
+
+* The log system should not output to stdout/stderr when not in an
+  interactive shell as uxlaunch logs those to ~/.xsession-errors.
+* When being launched from a interactive shell, display the messages as
+  usual
+* Log messages to syslog to be able to detect/investigate issues. The
+  verbosity of messages logged this way is tweakable though the
+  glib.syslog linux command line parameter:
+    -  glib.syslog=0 disables syslog logging
+    -  glib.syslog=1 logs error messages
+    -  ...
+    -  glib.syslog=6 logs debug messages
+  It defaults to logging WARNING, CRITICAL and ERROR messages
+---
+ glib/gmessages.c |  144 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 143 insertions(+), 1 deletions(-)
+
+diff --git a/glib/gmessages.c b/glib/gmessages.c
+index 9a3eec3..ad05954 100644
+--- a/glib/gmessages.c
++++ b/glib/gmessages.c
+@@ -40,6 +40,7 @@
+ #include <signal.h>
+ #include <locale.h>
+ #include <errno.h>
++#include <syslog.h>
+ 
+ #include "glib.h"
+ #include "gdebug.h"
+@@ -925,6 +926,142 @@ escape_string (GString *string)
+     }
+ }
+ 
++/* That is a syslog version of default log handler. */
++
++#define IS_EMPTY_STRING(s)	(NULL == (s) || 0 == *(s))
++
++#define GLIB_PREFIX	"GLIB"
++#define DEFAULT_DOMAIN	"default"
++#define DEFAULT_MESSAGE	"(NULL) message"
++
++/*
++ * Returns the shift of maximum log level we should log.
++ * This level can be tuned with a linux command line parameter:
++ *  glib.syslog=0 disables syslog logging
++ *  glib.syslog=1 logs error messages
++ *  ...
++ *  glib.syslog=6 logs debug messages
++ *
++ * We default to logging G_LOG_LEVEL_WARNING messages and down (ie. ERROR,
++ * CRITICAL, WARNING)
++ */
++
++#define GLIB_SYSLOG_CMDLINE_PARAM   "glib.syslog="
++
++static guint
++g_log_syslog_max_level_shift (void)
++{
++  static guint max_level = 0;
++  gchar *cmdline;
++  guint i;
++  gchar **tokens;
++
++  if (G_LIKELY (max_level) != 0)
++    return max_level;
++
++  max_level = 4; /* defaults WARNING */
++  if (!g_file_get_contents ("/proc/cmdline", &cmdline, NULL, NULL))
++    return max_level;
++
++  tokens = g_strsplit (cmdline, " ", 0);
++  for (i = 0; tokens[i]; i++)
++    {
++      gchar *level, *token = tokens[i];
++
++      if (!g_str_has_prefix (token, GLIB_SYSLOG_CMDLINE_PARAM))
++        continue;
++
++      level = token + sizeof (GLIB_SYSLOG_CMDLINE_PARAM) - 1;
++      max_level = atoi (level);
++      max_level = CLAMP (max_level + 1, 1, 7);
++    }
++
++  g_strfreev (tokens);
++  g_free (cmdline);
++
++  return max_level;
++}
++
++static void
++g_log_syslog_handler (const gchar    *log_domain,
++		      GLogLevelFlags  log_level,
++		      const gchar    *message,
++		      gpointer        unused_data)
++{
++  static gboolean initialized = FALSE;
++
++  /* This call only variables */
++  const gchar* alert    = (log_level & ALERT_LEVELS ? " ** " : " ");
++  const gchar* aborting = (log_level & G_LOG_FLAG_FATAL ? "\naborting..." : "");
++
++  const gchar* prefix;
++  int   priority;
++
++  /* Check first that logging facility is initialized */
++  if (G_UNLIKELY (initialized == FALSE))
++    {
++      openlog (NULL, LOG_PID, LOG_USER);
++      initialized = !initialized;
++    }
++
++  /* do we actually log that level? */
++  if ((1 << g_log_syslog_max_level_shift ()) < (log_level & G_LOG_LEVEL_MASK))
++    return;
++
++  /* Validate log domain */
++  if (IS_EMPTY_STRING (log_domain))
++    log_domain = DEFAULT_DOMAIN;
++
++  /* Check log message for validity */
++  if (IS_EMPTY_STRING (message))
++    message = DEFAULT_MESSAGE;
++
++  /* Process the message prefix and priority */
++  switch (log_level & G_LOG_LEVEL_MASK)
++    {
++    case G_LOG_LEVEL_ERROR:
++      prefix   = "ERROR";
++      priority = LOG_ERR;
++      break;
++    case G_LOG_LEVEL_CRITICAL:
++      prefix   = "CRITICAL";
++      priority = LOG_CRIT;
++      break;
++    case G_LOG_LEVEL_WARNING:
++      prefix   = "WARNING";
++      priority = LOG_WARNING;
++      break;
++    case G_LOG_LEVEL_MESSAGE:
++      prefix   = "MESSAGE";
++      priority = LOG_NOTICE;
++      break;
++    case G_LOG_LEVEL_INFO:
++      prefix   = "INFO";
++      priority = LOG_INFO;
++      break;
++    default:
++      prefix   = "DEBUG";
++      priority = LOG_DEBUG;
++      break;
++    }
++
++  /* Now printing the message to syslog */
++  syslog (priority, "%s %s%s%s - %s%s", GLIB_PREFIX, prefix, alert, log_domain,
++          message, aborting);
++}
++
++static gboolean
++is_interactive (void)
++{
++  gint interactive = -1;
++
++  if (G_LIKELY (interactive != -1))
++    return interactive;
++
++  interactive = g_getenv ("PWD") != NULL;
++  return interactive;
++}
++
+ void
+ g_log_default_handler (const gchar   *log_domain,
+ 		       GLogLevelFlags log_level,
+@@ -999,7 +1136,12 @@ g_log_default_handler (const gchar   *log_domain,
+ 
+   string = g_string_free (gstring, FALSE);
+ 
+-  write_string (fd, string);
++  /* only output a string to stdout/stderr if we are in an interactive shell */
++  if (is_interactive ())
++    write_string (fd, string);
++
++  /* */
++  g_log_syslog_handler (log_domain, log_level, message, unused_data);
+   g_free (string);
+ }
+ 
+-- 
+1.7.0.1
+

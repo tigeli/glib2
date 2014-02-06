@@ -1,0 +1,98 @@
+* Mon Oct 28 2012 David Greaves <david.greaves@jollamobile.com> - 2.32.4
+- Build with --enable-debug=no unless stage_devel defined
+
+* Mon Jul 30 2012 Marko Saukko <marko.saukko@jollamobile.com> - 2.32.4
+- Update to version 2.32.4
+- Added .yaml for spectacle.
+- Dropped glib-2.30.2-nogccatomics.patch
+
+* Mon Jan 09 2012 Marko Saukko <marko.saukko@cybercom.com> - 2.30.2
+- Fixes MER#28: Drop gamin dependency.
+
+* Sat Dec 10 2011 Carsten Munk <carsten@maemo.org> - 2.30.2
+- Add glib-2.30.2-nogccatomics.patch for armv6l
+
+* Wed Nov 16 2011 Marko Saukko <marko.saukko@cybercom.com> - 2.30.2
+- Updated to version 2.30.2
+- Added libffi and python build deps.
+- Dropped glib-no-fsync.patch
+
+* Sat Jun 11 2011 Anas Nashif <anas.nashif@intel.com> - 2.28.8
+- Cleanup spec
+
+* Mon Jun 06 2011 Damien Lespiau <damien.lespiau@intel.com> - 2.28.8
+- Update to latest stable version
+
+* Fri May 27 2011 Anas Nashif <anas.nashif@intel.com> - 2.28.7
+- Update to 2.28.7
+- Split Documentation and Locale files
+
+* Mon Apr 25 2011 Peter J Zhu <peter.j.zhu@intel.com> - 2.28.6
+- Move more binaries to main package to align with rest GSettings needes
+
+* Mon Apr 25 2011 Peter J Zhu <peter.j.zhu@intel.com> - 2.28.6
+- Move glib-compile-schemas to binary packages so that packages using GSettings doesn't pull glib2-devel. One example is telpathy-logger which pulles in glib2-devel to tablet image
+
+* Thu Apr 14 2011 Damien Lespiau <damien.lespiau@intel.com> - 2.28.6
+- More translation and documentation updates,
+- Fix a potential crasher in g_settings_delay()
+
+* Tue Apr 05 2011 Anas Nashif <anas.nashif@intel.com> - 2.28.5
+- Update to latest bug fix release + translation updates
+- 2.28.5
+
+* Wed Feb 16 2011 Rob Bradford <rob@linux.intel.com> - 2.28.0
+- Update to 2.28 - needed for updating Empathy and related components which we
+need to continue interoperating with previously supported IM protocols
+
+* Fri Oct 15 2010 Damien Lespiau <damien.lespiau@intel.com> - 2.26.0
+- Update to 2.26.0
+- Remove unused patch from package
+
+* Mon May 10 2010 Damien Lespiau <damien.lespiau@intel.com> - 2.24.0
+- The message log handler is now configurable and does not print
+  to stdout/stderr when not in an interactive shell
+
+* Sat Apr 10 2010 Anas Nashif <anas.nashif@intel.com> - 2.24.0
+- Fixed rpmlint errors
+
+* Tue Mar 30 2010 Vivian Zhang <vivian.zhang@intel.com> - 2.24.0
+- Update to 2.24.0
+
+* Fri Mar 26 2010 Anas Nashif <anas.nashif@intel.com> - 2.23.5
+- Remove Epoch requirement on pkgconfig
+
+* Tue Mar 9 2010 Vivian Zhang <vivian.zhang@intel.com> - 2.23.5
+- Upgrade to 2.23.5
+
+* Mon Mar 01 2010 Anas Nashif <anas.nashif@intel.com> - 2.23.3
+- Add zlib-devel to BuildRequires
+
+* Fri Feb 19 2010 Arjan van de Ven <arjan@linux.intel.com> - 2.23.3
+- Use profile guided optimization during the build
+
+* Fri Feb 12 2010 Arjan van de Ven <arjan@linux.intel.com> - 2.23.3
+- Upgrade to 2.23.3
+
+* Wed Jan 13 2010 Xu Li <xu.li@intel.com> - 2.23.1
+- Upgrade to 2.23.1
+
+* Wed Dec 23 2009 Xu Li <xu.li@intel.com> - 2.23.0
+- Upgrade to 2.23.0
+
+* Fri Dec 04 2009 Xu Li <xu.li@intel.com> - 2.22.3
+- Upgrade to 2.22.3
+- Fix installed file list
+
+* Thu Sep 24 2009 Xu Li <xu.li@intel.com> - 2.22.0
+- Upgrade to 2.22.0
+
+* Sun Sep 06 2009 Anas Nashif <anas.nashif@intel.com> - 2.21.6
+- Update to 2.21.6
+
+* Mon Aug 31 2009 Xu Li <xu.li@intel.com> - 2.21.5
+- Upgrade to 2.21.5
+
+* Sat Aug 22 2009 Anas Nashif <anas.nashif@intel.com> - 2.21.4
+- Update to 2.21.4
+

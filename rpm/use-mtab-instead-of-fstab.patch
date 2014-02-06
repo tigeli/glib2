@@ -1,0 +1,11 @@
+--- glib-2.32.4/gio/gunixmounts.c.orig	2013-12-05 20:04:49.919990399 +0000
++++ glib-2.32.4/gio/gunixmounts.c	2013-12-05 20:05:26.217706386 +0000
+@@ -754,7 +754,7 @@
+   GUnixMountPoint *mount_entry;
+   GList *return_list;
+   
+-  read_file = get_fstab_file ();
++  read_file = get_mtab_read_file ();
+   
+   file = setmntent (read_file, "r");
+   if (file == NULL)
