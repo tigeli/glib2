@@ -3,7 +3,7 @@ Name:       glib2
 %define keepstatic 1
 
 Summary:    A library of handy utility functions
-Version:    2.32.4
+Version:    2.36.4
 Release:    1
 Group:      System/Libraries
 License:    LGPLv2+
@@ -12,10 +12,9 @@ Source0:    %{name}-%{version}.tar.xz
 Source2:    glib2.sh
 Source3:    glib2.csh
 Source4:    %{name}-rpmlintrc
-Patch0:     glib-2.24.0-syslog-message-handler.patch
+Patch0:     glib-2.36.3-syslog-message-handler.patch
 Patch1:     0001-Add-dev-mmcblk-to-the-list-of-devices-to-be-detected.patch
 Patch2:     use-mtab-instead-of-fstab.patch
-Patch3:     disable-gtkdoc.patch
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(libpcre)
@@ -60,14 +59,12 @@ version 2 of the GLib library.
 %prep
 %setup -q -n %{name}-%{version}/upstream
 
-# glib-2.24.0-syslog-message-handler.patch
+# glib-2.36.3-syslog-message-handler.patch
 %patch0 -p1
 # 0001-Add-dev-mmcblk-to-the-list-of-devices-to-be-detected.patch
 %patch1 -p1
 # use-mtab-instead-of-fstab.patch
 %patch2 -p1
-# disable-gtkdoc.patch
-%patch3 -p1
 
 %build
 # >> build pre
@@ -108,13 +105,13 @@ rm -rf %{buildroot}
 
 # >> install post
 ## glib2.sh and glib2.csh
-./mkinstalldirs %{buildroot}%{_sysconfdir}/profile.d
+mkdir -p %{buildroot}%{_sysconfdir}/profile.d
 install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/profile.d
 install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/profile.d
 
 rm -f %{buildroot}%{_libdir}/*.la
 rm -f %{buildroot}%{_libdir}/gio/modules/*.{a,la}
-rm -f %{buildroot}%{_libdir}/gdbus-2.0/codegen/*.{pyc,pyo}
+rm -f %{buildroot}%{_datadir}/glib-2.0/codegen/*.{pyc,pyo}
 
 # MeeGo does not provide bash completion
 rm -rf %{buildroot}%{_sysconfdir}/bash_completion.d
@@ -176,7 +173,7 @@ mv glib20.lang glib2.lang
 %{_bindir}/gobject-query
 %{_bindir}/gtester
 %{_bindir}/gdbus-codegen
-%dir %{_libdir}/gdbus-2.0/codegen
-%{_libdir}/gdbus-2.0/codegen/*
+%dir %{_datadir}/glib-2.0/codegen
+%{_datadir}/glib-2.0/codegen/*
 %attr (0755, root, root) %{_bindir}/gtester-report
 # << files devel

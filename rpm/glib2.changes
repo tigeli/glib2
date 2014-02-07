@@ -1,3 +1,7 @@
+* Mon Aug 26 2013 Davide Bettio <davide.bettio@ispirata.com> 2.36.4
+- Updated old syslog-message-handler patch to build with a recent glib2.
+- Updated spec to install to the correct path gdbus codegen code.
+
 * Mon Oct 28 2012 David Greaves <david.greaves@jollamobile.com> - 2.32.4
 - Build with --enable-debug=no unless stage_devel defined
 

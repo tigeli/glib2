@@ -15,24 +15,26 @@ Subject: [PATCH] Add a custom log handling for MeeGo
     -  ...
     -  glib.syslog=6 logs debug messages
   It defaults to logging WARNING, CRITICAL and ERROR messages
----
- glib/gmessages.c |  144 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 143 insertions(+), 1 deletions(-)
-
-diff --git a/glib/gmessages.c b/glib/gmessages.c
-index 9a3eec3..ad05954 100644
---- a/glib/gmessages.c
-+++ b/glib/gmessages.c
-@@ -40,6 +40,7 @@
+--- a/glib/gmessages.c	2013-06-10 00:03:18.000000000 +0200
++++ b/glib/gmessages.c	2013-07-15 17:12:04.190826951 +0200
+@@ -58,6 +58,7 @@
  #include <signal.h>
  #include <locale.h>
  #include <errno.h>
 +#include <syslog.h>
  
- #include "glib.h"
- #include "gdebug.h"
-@@ -925,6 +926,142 @@ escape_string (GString *string)
-     }
+ #include "gmessages.h"
+ 
+@@ -70,6 +71,7 @@
+ #include "gprintfint.h"
+ #include "gtestutils.h"
+ #include "gthread.h"
++#include "gstdio.h"
+ #include "gstrfuncs.h"
+ #include "gstring.h"
+ #include "gpattern.h"
+@@ -1011,6 +1013,142 @@
+   va_end (args);
  }
  
 +/* That is a syslog version of default log handler. */
@@ -172,9 +174,9 @@ index 9a3eec3..ad05954 100644
 +}
 +
  void
- g_log_default_handler (const gchar   *log_domain,
- 		       GLogLevelFlags log_level,
-@@ -999,7 +1136,12 @@ g_log_default_handler (const gchar   *log_domain,
+ g_return_if_fail_warning (const char *log_domain,
+ 			  const char *pretty_function,
+@@ -1375,7 +1513,12 @@
  
    string = g_string_free (gstring, FALSE);
  
@@ -188,6 +190,3 @@ index 9a3eec3..ad05954 100644
    g_free (string);
  }
  
--- 
-1.7.0.1
-
