@@ -51,6 +51,7 @@ of version 2 of the GLib library.
 Summary:    A library of handy utility functions
 Group:      Development/Libraries
 Requires:   %{name} = %{version}-%{release}
+Requires:   python
 
 %description devel
 The glib2-devel package includes the header files for
