@@ -3,7 +3,7 @@ Name:       glib2
 %define keepstatic 1
 
 Summary:    A library of handy utility functions
-Version:    2.36.4
+Version:    2.38.2
 Release:    1
 Group:      System/Libraries
 License:    LGPLv2+
@@ -12,9 +12,10 @@ Source0:    %{name}-%{version}.tar.xz
 Source2:    glib2.sh
 Source3:    glib2.csh
 Source4:    %{name}-rpmlintrc
-Patch0:     glib-2.36.3-syslog-message-handler.patch
-Patch1:     0001-Add-dev-mmcblk-to-the-list-of-devices-to-be-detected.patch
-Patch2:     use-mtab-instead-of-fstab.patch
+Patch0:     0001-GDBusObjectManagerClient-keep-the-manager-alive-whil.patch
+Patch1:     glib-2.36.3-syslog-message-handler.patch
+Patch2:     0001-Add-dev-mmcblk-to-the-list-of-devices-to-be-detected.patch
+Patch3:     use-mtab-instead-of-fstab.patch
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(libpcre)
@@ -59,12 +60,14 @@ version 2 of the GLib library.
 %prep
 %setup -q -n %{name}-%{version}/upstream
 
-# glib-2.36.3-syslog-message-handler.patch
+# 0001-GDBusObjectManagerClient-keep-the-manager-alive-whil.patch
 %patch0 -p1
-# 0001-Add-dev-mmcblk-to-the-list-of-devices-to-be-detected.patch
+# glib-2.36.3-syslog-message-handler.patch
 %patch1 -p1
-# use-mtab-instead-of-fstab.patch
+# 0001-Add-dev-mmcblk-to-the-list-of-devices-to-be-detected.patch
 %patch2 -p1
+# use-mtab-instead-of-fstab.patch
+%patch3 -p1
 
 %build
 # >> build pre
