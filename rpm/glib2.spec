@@ -79,10 +79,9 @@ version 2 of the GLib library.
 # << build pre
 %autogen  \
     --enable-static \
-    --with-pcre=system \
-    %{!?qa_stage_devel:--enable-debug=no}
+    --with-pcre=system
 
-make %{?jobs:-j%jobs}
+make %{?_smp_mflags}
 
 # >> build post
 cd tests/gobject
