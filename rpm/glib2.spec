@@ -16,6 +16,7 @@ Patch0:     0001-GDBusObjectManagerClient-keep-the-manager-alive-whil.patch
 Patch1:     glib-2.36.3-syslog-message-handler.patch
 Patch2:     0001-Add-dev-mmcblk-to-the-list-of-devices-to-be-detected.patch
 Patch3:     use-mtab-instead-of-fstab.patch
+Patch4:     0001-clock-use-CLOCK_BOOTTIME-instead-of-CLOCK_MONOTONIC.patch
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(libpcre)
@@ -69,6 +70,8 @@ version 2 of the GLib library.
 %patch2 -p1
 # use-mtab-instead-of-fstab.patch
 %patch3 -p1
+# 0001-clock-use-CLOCK_BOOTTIME-instead-of-CLOCK_MONOTONIC.patch
+%patch4 -p1
 
 %build
 # >> build pre

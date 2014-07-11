@@ -1,0 +1,39 @@
+From b59564813b97c65f42b4ef81dc1e509d8fd63e94 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Pasi=20Sj=C3=B6holm?= <pasi.sjoholm@jollamobile.com>
+Date: Fri, 11 Jul 2014 22:13:54 +0300
+Subject: [PATCH] [clock] use CLOCK_BOOTTIME instead of CLOCK_MONOTONIC
+
+---
+ glib/gmain.c         | 2 +-
+ glib/gthread-posix.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/glib/gmain.c b/glib/gmain.c
+index ed7a9e8..2f2a559 100644
+--- a/glib/gmain.c
++++ b/glib/gmain.c
+@@ -2545,7 +2545,7 @@ g_get_monotonic_time (void)
+   struct timespec ts;
+ 
+ #ifdef CLOCK_MONOTONIC
+-  clock_gettime (CLOCK_MONOTONIC, &ts);
++  clock_gettime (CLOCK_BOOTTIME, &ts);
+ #else
+   clock_gettime (CLOCK_REALTIME, &ts);
+ #endif
+diff --git a/glib/gthread-posix.c b/glib/gthread-posix.c
+index c7b68a0..f52b9ff 100644
+--- a/glib/gthread-posix.c
++++ b/glib/gthread-posix.c
+@@ -642,7 +642,7 @@ g_cond_impl_new (void)
+ 
+   pthread_condattr_init (&attr);
+ #if defined (HAVE_PTHREAD_CONDATTR_SETCLOCK) && defined (CLOCK_MONOTONIC)
+-  pthread_condattr_setclock (&attr, CLOCK_MONOTONIC);
++  pthread_condattr_setclock (&attr, CLOCK_BOOTTIME);
+ #endif
+ 
+   cond = malloc (sizeof (pthread_cond_t));
+-- 
+1.9.1
+
